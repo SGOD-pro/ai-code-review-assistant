@@ -1,7 +1,9 @@
 import { execSync } from "child_process";
 import OpenAI from "openai";
 import { Octokit } from "@octokit/rest";
+import dotenv from "dotenv";
 
+dotenv.config();
 // --- Setup clients ---
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -57,28 +59,38 @@ ${diff}
 
 async function postComment(review) {
   try {
+    // Fetch the PR to get the correct commit SHA
+    const { data: pr } = await octokit.pulls.get({
+      owner,
+      repo,
+      pull_number: prNumber,
+    });
+
     await octokit.pulls.createReviewComment({
       owner,
       repo,
       pull_number: prNumber,
       body: `🤖 AI Review: ${review.message}`,
-      commit_id: process.env.GITHUB_SHA,
+      commit_id: pr.head.sha,   // ✅ correct SHA
       path: review.file,
       line: review.line,
     });
+
     console.log("✅ Inline comment posted!");
-    console.log(X)
   } catch (err) {
     console.warn("⚠️ Inline comment failed, falling back:", err.message);
+
     await octokit.issues.createComment({
       owner,
       repo,
       issue_number: prNumber,
       body: `🤖 AI Review: ${review.message}`,
     });
+
     console.log("✅ Regular PR comment posted!");
   }
 }
+
 
 main().catch((err) => {
   console.error("❌ Error:", err);
