@@ -67,6 +67,7 @@ async function postComment(review) {
       line: review.line,
     });
     console.log("✅ Inline comment posted!");
+    console.log(X)
   } catch (err) {
     console.warn("⚠️ Inline comment failed, falling back:", err.message);
     await octokit.issues.createComment({
