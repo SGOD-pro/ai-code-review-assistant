@@ -7,23 +7,42 @@ on:
 jobs:
   ai-review:
     runs-on: ubuntu-latest
+
+    # grant only the permissions the job needs
+    permissions:
+      contents: read         # checkout & read repo files
+      pull-requests: write   # create review comments (pulls.createReviewComment)
+      issues: write          # fallback to issues.createComment
+      checks: write          # optional: create checks summary
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          # caching npm cache speeds up installs across runs
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: "npm"
 
-      - name: Install deps
-        run: npm install
+      - name: Install dependencies
+        # npm ci is preferred for CI reproducible installs (requires package-lock.json)
+        run: npm ci
 
       - name: Run AI review
         run: node index.js
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          BASE_URL: ${{ secrets.BASE_URL }}
+          BASE_URL: ${{ secrets.BASE_URL }}               # optional: custom provider / proxy
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PR: ${{ github.event.pull_request.number }}
           GITHUB_REPO: ${{ github.repository }}

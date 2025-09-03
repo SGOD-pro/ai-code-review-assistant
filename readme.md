@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: SGOD-pro/ai-code-reviewer@v1
+      - uses: SGOD-pro/ai-code-review-assistant@v1
         with:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
 ```
