@@ -1,0 +1,31 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  ai-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install deps
+        run: npm install
+
+      - name: Run AI review
+        run: node index.js
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PR: ${{ github.event.pull_request.number }}
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
