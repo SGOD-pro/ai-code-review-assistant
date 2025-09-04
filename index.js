@@ -86,7 +86,7 @@ async function postComment(review) {
       issue_number: prNumber,
       body: `🤖 AI Review: ${review.message}`,
     });
-
+console.log(X);
     console.log("✅ Regular PR comment posted!");
   }
 }
