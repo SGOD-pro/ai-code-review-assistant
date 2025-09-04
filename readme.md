@@ -1,23 +1,22 @@
-
 # 🤖 AI Code Reviewer (GitHub Action)
+
 Automatically review Pull Requests using OpenAI.
 This action analyzes code diffs and adds comments directly to your PRs — like having a senior developer on your team.
 
 ## 🚀 Features
 
-* Runs automatically on every PR
-* Uses OpenAI to detect bugs, style issues, and improvements
-* Posts inline comments directly in GitHub PRs
-* Lightweight setup — no servers required
+- Runs automatically on every PR
+- Uses OpenAI to detect bugs, style issues, and improvements
+- Posts inline comments directly in GitHub PRs
+- Lightweight setup — no servers required
 
 ## ⚡ Quick Start
 
 1. Add workflow file
 
+Create `.github/workflows/ai-review.yml` in your repo and paste:
 
-Create `.github/workflows/ai-review.yml` in your repo:
-
-``` yaml
+```yaml
 name: AI Code Review
 
 on:
@@ -33,29 +32,31 @@ jobs:
       - uses: SGOD-pro/ai-code-review-assistant@v1
         with:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          # Optional: base_url for alternate providers (leave unset for OpenAI)
+          base_url: ${{ secrets.BASE_URL }}
 ```
-2. Add OpenAI API Key
-     1. Go to GitHub → Settings → Secrets and variables → Actions
 
-     2. Add new secret:
+2. 🔐 Add required secrets
 
-     3. Name: OPENAI_API_KEY
+   1. Go to GitHub → Settings → Secrets and variables → Actions
 
-     4. Value: your OpenAI API key
+   2. Add the following secret(s):
+      * OPENAI_API_KEY — your OpenAI API key (or API key for whichever provider you use)
+      * BASE_URL — optional — set if you use an alternative endpoint (OpenRouter, NVIDIA, a proxy, etc.). If not set, the action uses https://api.openai.com/v1.
 
 3. Open a Pull Request
 
-     * Push a new branch and open a PR.
+   - Push a new branch and open a PR.
 
-     * The action will run automatically.
+   - The action will run automatically.
 
-     * AI review comments will appear inside your PR.
+   - AI review comments will appear inside your PR.
 
 ## ⚙️ Optional Configuration
 
 You can create a `.aicodereview.json` file in the root of your repo to customize review rules.
 
-``` json
+```json
 {
   "languages": {
     "js": { "styleGuide": "airbnb", "maxFunctionLength": 50 }
@@ -65,11 +66,12 @@ You can create a `.aicodereview.json` file in the root of your repo to customize
   }
 }
 ```
+
 ## 🛠️ Development
 
 To run locally:
 
-``` bash
+```bash
 npm install
 node index.js
 
@@ -77,16 +79,17 @@ node index.js
 
 ## 📌 Notes
 
-* Requires Node.js 18+
+- Requires Node.js 18+
 
-* Uses OpenAI GPT models (default: gpt-4o-mini)
+- Uses OpenAI GPT models (default: gpt-4o-mini)
 
-* GITHUB_TOKEN is automatically provided by GitHub Actions
+- GITHUB_TOKEN is automatically provided by GitHub Actions
 
 ## 📷 Example
 
 Pull Request with AI comments:
-``` txt
+
+```txt
 🤖 AI Review: Consider handling null values in this function.
 
 ```

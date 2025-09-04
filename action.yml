@@ -1,0 +1,17 @@
+name: "AI Code Review"
+description: "Automatically review Pull Requests using OpenAI or compatible LLM providers (OpenAI, OpenRouter, NVIDIA etc.)."
+author: "Souvik Karmakar"
+
+# Inputs exposed to users via `with:` in their workflow
+inputs:
+  openai_api_key:
+    description: "OpenAI API key (or API key for compatible provider). You can also pass it via repository secrets."
+    required: true
+  base_url:
+    description: "Optional base URL for alternate LLM providers or a proxy (e.g. https://api.openrouter.ai). If not provided, defaults to https://api.openai.com/v1."
+    required: false
+
+# How GitHub will run your action (simple JS action running the index.js entrypoint)
+runs:
+  using: "node18"
+  main: "index.js"
